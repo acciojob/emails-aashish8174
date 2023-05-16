@@ -5,8 +5,8 @@ import java.util.Date;
 
 public class Gmail extends Email {
 
-    ArrayList<Mails> inboxmail = new ArrayList<>();
-    ArrayList<Mails> trashbox = new ArrayList<>();
+    ArrayList<Mails> inboxmail ;
+    ArrayList<Mails> trashbox ;
 
     int inboxCapacity; //maximum number of mails inbox can store
     //StringBuilder Inbox = new StringBuilder();
@@ -17,16 +17,14 @@ public class Gmail extends Email {
         super(emailId);
         //super.emailId = emailId;
        this.inboxCapacity = inboxCapacity;
-    }
-
-    public Gmail(String emailId) {
-        super(emailId);
+        inboxmail = new ArrayList<>();
+        trashbox = new ArrayList<>();
     }
 
     public void receiveMail(Date date, String sender, String message){
         int size = inboxmail.size();
            if(size>=inboxCapacity){
-               trashbox.add(inboxmail.remove(size-1));
+               trashbox.add(inboxmail.remove(0));
            }
            inboxmail.add(new Mails(date,sender,message));
         // If the inbox is full, move the oldest mail in the inbox to trash and add the new mail to inbox.
@@ -51,7 +49,7 @@ public class Gmail extends Email {
 
     public String findLatestMessage(){
         if(inboxmail.size()==0) return null;
-        Mails m = inboxmail.get(0);
+        Mails m = inboxmail.get(inboxmail.size()-1);
         return m.message;
         // If the inbox is empty, return null
         // Else, return the message of the latest mail present in the inbox
@@ -60,7 +58,7 @@ public class Gmail extends Email {
 
     public String findOldestMessage(){
         if(inboxmail.size()==0) return null;
-        Mails m = inboxmail.get(inboxmail.size()-1);
+        Mails m = inboxmail.get(0);
         return m.message;
         // If the inbox is empty, return null
         // Else, return the message of the oldest mail present in the inbox
@@ -70,15 +68,10 @@ public class Gmail extends Email {
     public int findMailsBetweenDates(Date start, Date end){
         int mass = 0;
         for(int i=0;i<inboxmail.size();i++){
-            boolean f = false;
-            Mails m = inboxmail.get(i);
-            if(m.date==start){
-                f=true;
-            }
-            if(f) mass++;
-            if(m.date==end){
-                return mass;
-            }
+           Mails m = inboxmail.get(i);
+           Date mydate =m.date;
+           if(mydate.compareTo(start)>=0 && mydate.compareTo(end)<=0)
+               mass++;
         }
         return mass;
         //find number of mails in the inbox which are received between given dates
@@ -105,7 +98,7 @@ public class Gmail extends Email {
     }
 
     public int getInboxCapacity() {
-        return inboxCapacity-inboxmail.size();
+        return inboxCapacity;
         // Return the maximum number of mails that can be stored in the inbox
     }
     public class Mails{

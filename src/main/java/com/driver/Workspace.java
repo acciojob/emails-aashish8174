@@ -5,6 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Workspace extends Gmail{
 
@@ -13,8 +14,8 @@ public class Workspace extends Gmail{
 
     public Workspace(String emailId) {
         // The inboxCapacity is equal to the maximum value an integer can store.
-       super(emailId);
-        inboxCapacity = Integer.MAX_VALUE;
+       super(emailId,Integer.MAX_VALUE);
+       // inboxCapacity = Integer.MAX_VALUE;
         calendar = new ArrayList<>();
     }
 
@@ -24,8 +25,20 @@ public class Workspace extends Gmail{
     }
 
     public int findMaxMeetings(){
-        int maxMeet = 0;
-        return maxMeet;
+
+        List<Meeting> sortedCalander = new ArrayList<>(List.copyOf(calendar));
+        Collections.sort(sortedCalander,(x,y)-> x.getEndTime().compareTo(y.getEndTime()));
+        List <Meeting> maxMeeting = new ArrayList<>();
+        LocalTime timeLimite = sortedCalander.get(0).getEndTime();
+        maxMeeting.add(sortedCalander.get(0));
+
+        for(Meeting meeting:sortedCalander){
+            if(meeting.getStartTime().compareTo(timeLimite)>0){
+                maxMeeting.add(meeting);
+                timeLimite = meeting.getEndTime();
+            }
+        }
+        return maxMeeting.size();
         // find the maximum number of meetings you can attend
         // 1. At a particular time, you can be present in at most one meeting
         // 2. If you want to attend a meeting, you must join it at its start time and leave at end time.

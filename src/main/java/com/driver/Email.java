@@ -22,7 +22,7 @@ public class Email {
 
     public void changePassword(String oldPassword, String newPassword){
             if (!oldPassword.equals(this.password)){
-                System.out.println("wrong password");
+               // System.out.println("wrong password");
                 //return;
             }
             else{
